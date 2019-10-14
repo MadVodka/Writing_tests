@@ -9,7 +9,6 @@ import java.util.Deque;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static ivan.vatlin.calculator.CalculationOperators.*;
 
@@ -45,7 +44,11 @@ public class Calculator {
     }
 
     public String validateInputExpression(String inputExpression) throws CalculatorValidationException {
-        if (inputExpression.equals("")) {
+        if (inputExpression == null) {
+            throw new NullPointerException("Выражение не может быть равным null");
+        }
+
+        if ("".equals(inputExpression)) {
             throw new CalculatorValidationException("Пустое выражение");
         }
 
@@ -61,21 +64,24 @@ public class Calculator {
         return inputExpression;
     }
 
-    public Double convertStringToDouble(String doubleAsString) throws NumberFormatException {
-        return Stream.of(doubleAsString)
-//                .filter(Objects::nonNull)
-                .mapToDouble(Double::valueOf)
-                .findFirst()
-                .orElse(0);
+    public Double convertStringToDouble(String doubleAsString) {
+        if (doubleAsString == null) {
+            return null;
+        }
+        return Double.valueOf(doubleAsString);
     }
 
     public double doOperationOnDoubles(Double firstDouble, Double secondDouble, String operator)
             throws DivideByZeroException, WrongOperandsException {
+        if (secondDouble == null) {
+            throw new WrongOperandsException("Число не может быть null");
+        }
         if (firstDouble == null) {
-            if (operator.equals(MINUS)) {
-                return 0 - secondDouble;
+            if (MINUS.equals(operator)) {
+                firstDouble = 0.0;
+            } else {
+                throw new WrongOperandsException("Неправильный порядок операндов");
             }
-            return secondDouble;
         }
 
         switch (operator) {

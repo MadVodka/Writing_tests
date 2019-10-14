@@ -1,5 +1,6 @@
+package positive;
+
 import ivan.vatlin.calculator.Calculator;
-import ivan.vatlin.exceptions.DivideByZeroException;
 import ivan.vatlin.exceptions.WrongOperandsException;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MathematicalOperationsTest {
-
     private Calculator calculator = new Calculator();
 
     @Test
@@ -37,7 +37,12 @@ public class MathematicalOperationsTest {
     }
 
     @Test
-    void testDividingByZero() {
-        assertThrows(DivideByZeroException.class, () -> calculator.doOperationOnDoubles(3.5, 0.0, DIVIDE));
+    void testNullFirstArgumentAndMinusSecond() throws WrongOperandsException {
+        assertEquals(-10, calculator.doOperationOnDoubles(null, 10.0, MINUS));
+    }
+
+    @Test
+    void testNullFirstNumber() {
+        assertThrows(WrongOperandsException.class, () -> calculator.doOperationOnDoubles(null, 10.0, MULTIPLY));
     }
 }
