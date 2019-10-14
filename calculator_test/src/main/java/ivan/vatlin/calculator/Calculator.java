@@ -29,8 +29,8 @@ public class Calculator {
                 Double secondDouble = convertStringToDouble(numbersStack.poll());
                 Double firstDouble = convertStringToDouble(numbersStack.poll());
 
-                String result = doOperationOnDoubles(firstDouble, secondDouble, operand);
-                numbersStack.push(result);
+                double result = doOperationOnDoubles(firstDouble, secondDouble, operand);
+                numbersStack.push(Double.toString(result));
             } else if (Pattern.matches(CalculatorRegEx.BRACES_REG_EX, operand)) {
                 throw new WrongOperandsException("Используются лишние скобки");
             } else {
@@ -69,40 +69,31 @@ public class Calculator {
                 .orElse(0);
     }
 
-    public String doOperationOnDoubles(Double firstDouble, Double secondDouble, String operator)
+    public double doOperationOnDoubles(Double firstDouble, Double secondDouble, String operator)
             throws DivideByZeroException, WrongOperandsException {
-        if (firstDouble == 0) {
+        if (firstDouble == null) {
             if (operator.equals(MINUS)) {
-                return operator + secondDouble;
+                return 0 - secondDouble;
             }
-            return Double.toString(secondDouble);
+            return secondDouble;
         }
-
-        double result;
 
         switch (operator) {
             case POWER:
-                result = Math.pow(firstDouble, secondDouble);
-                break;
+                return Math.pow(firstDouble, secondDouble);
             case MULTIPLY:
-                result = firstDouble * secondDouble;
-                break;
+                return firstDouble * secondDouble;
             case DIVIDE:
                 if (secondDouble == 0) {
                     throw new DivideByZeroException("Деление на ноль невозможно");
                 }
-                result = firstDouble / secondDouble;
-                break;
+                return firstDouble / secondDouble;
             case PLUS:
-                result = firstDouble + secondDouble;
-                break;
+                return firstDouble + secondDouble;
             case MINUS:
-                result = firstDouble - secondDouble;
-                break;
+                return firstDouble - secondDouble;
             default:
                 throw new WrongOperandsException("Используются недопустимые операторы");
         }
-
-        return Double.toString(result);
     }
 }
