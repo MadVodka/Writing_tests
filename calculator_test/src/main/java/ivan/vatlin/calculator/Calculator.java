@@ -39,7 +39,7 @@ public class Calculator {
         return numbersStack.pop();
     }
 
-    private String prepareInputExpression(String inputExpression) {
+    public String prepareInputExpression(String inputExpression) {
         return inputExpression.replaceAll("\\s", "");
     }
 
