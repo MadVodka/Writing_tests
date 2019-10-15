@@ -1,31 +1,26 @@
 package edu.epam.izhevsk.junit;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalMatchers.geq;
 import static org.mockito.Mockito.*;
 
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PaymentControllerTest {
-    @Mock
     private static AccountService accountService;
-    @Mock
     private static DepositService depositService;
-    @InjectMocks
-    private PaymentController paymentController;
+    private static PaymentController paymentController;
 
     @BeforeAll
-    static void initServices() throws InsufficientFundsException {
+    public static void initServices() throws InsufficientFundsException {
         accountService = Mockito.mock(AccountService.class);
         depositService = Mockito.mock(DepositService.class);
+        paymentController = new PaymentController(accountService, depositService);
 
         when(accountService.isUserAuthenticated(100L)).thenReturn(true);
         when(depositService.deposit(geq(100L), anyLong()))
@@ -34,7 +29,8 @@ public class PaymentControllerTest {
 
     @Test
     public void testSuccessfulDeposit() throws InsufficientFundsException {
-        verify(paymentController).deposit(50L, 100L);
+        paymentController.deposit(50L, 100L);
+        verify(accountService).isUserAuthenticated(100L);
     }
 
     @Test
@@ -43,7 +39,8 @@ public class PaymentControllerTest {
     }
 
     @Test
-    public void testLargeAmountDeposit() {
-        assertThrows(InsufficientFundsException.class, () -> paymentController.deposit(100L, 100L));
+    public void testLargeAmountDeposit() throws InsufficientFundsException {
+        assertThrows(InsufficientFundsException.class, () -> paymentController.deposit(110L, 100L));
+        verify(depositService).deposit(110L, 100L);
     }
 }
