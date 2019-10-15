@@ -46,9 +46,16 @@ class UtilsTest {
     }
 
     @Test
+    void testFactorialOfZero() {
+        long expectedResult = 1;
+        long result = utils.computeFactorial(0);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
     void testFactorialWithTimeout() {
         Random random = new Random();
-        assertTimeout(Duration.ofMillis(10), () -> utils.computeFactorial(random.nextInt(1000000)));
+        assertTimeout(Duration.ofMillis(40), () -> utils.computeFactorial(random.nextInt(1000000)));
     }
 
     @Test
